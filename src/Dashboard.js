@@ -179,8 +179,8 @@ export default function Dashboard() {
               </Paper>
             </Grid>
             {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
                 <JobEntry />
               </Paper>
             </Grid>
