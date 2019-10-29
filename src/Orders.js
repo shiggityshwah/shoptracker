@@ -1,6 +1,6 @@
 /* eslint-disable no-script-url */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/styles';
 import Table from '@material-ui/core/Table';
@@ -30,9 +30,42 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Orders() {
+
+  const [hasError, setErrors] = useState(false);
+  const [openOrders, setOpenOrders] = useState([]);
+  const [openOrderParts, setOpenOrderParts] = useState([]);
+
+  async function fetchOrders() {
+      const orders = await fetch("http://localhost:3000/orders")
+      orders
+      .json()
+      .then(orders => setOpenOrders(orders))
+      .catch(err => setErrors(err));
+      if (openOrders.length)
+      {
+        openOrders.map(openOrder =>
+        {
+          const parts = await fetch("http://localhost:3000/order/" + openOrder)
+          parts
+          .json()
+          .then(parts => setOpenOrderParts(parts))
+          .catch(err => setErrors(err));
+        }
+
+      }
+  }
+
+  useEffect(() => {
+    fetchOrders ();
+    //create fetchParts
+  },[]);
+
+
+
   const classes = useStyles();
   return (
     <React.Fragment>
+      { openOrders.map(openOrder => (openOrder.id)) }
       <Title>Recent Orders</Title>
       <Table size="small">
         <TableHead>
@@ -45,13 +78,13 @@ export default function Orders() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <TableRow key={row.id}>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align="right">{row.amount}</TableCell>
+          {openOrders.map(openOrder => (
+            <TableRow key={openOrder.id}>
+              <TableCell>{openOrder.dateIssued}</TableCell>
+              <TableCell>{openOrder.buyer}</TableCell>
+              <TableCell>{openOrder.remitAddress}</TableCell>
+              <TableCell>{openOrder.id}</TableCell>
+              <TableCell align="right">{openOrder.vendorId}</TableCell>
             </TableRow>
           ))}
         </TableBody>
