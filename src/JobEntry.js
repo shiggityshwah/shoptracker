@@ -79,7 +79,7 @@ export default function JobEntry() {
                 <br/>
                 <Grid container spacing={4}>
 
-                <Grid item sm={12} md={4}>
+                <Grid item sm={12} md={3}>
                     <TextField
                         id="partNumber"
                         label="Part Number"
@@ -88,7 +88,7 @@ export default function JobEntry() {
                         }}
                     />
                 </Grid>
-                <Grid item sm={12} md={4}>
+                <Grid item sm={12} md={3}>
                     <TextField
                         id="partRev"
                         label="Part Revision"
@@ -98,7 +98,7 @@ export default function JobEntry() {
                         }}
                     />
                 </Grid>
-                <Grid item sm={12} md={4}>
+                <Grid item sm={12} md={3}>
                     <TextField
                         id="partQty"
                         label="Part Quantity"
@@ -108,7 +108,8 @@ export default function JobEntry() {
                         }}
                     />
                 </Grid>
-                <FormControl className={classes.formControl}>
+                <Grid item sm={12} md={3}>
+                    <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="status-native-helper">
                         Status
                     </InputLabel>
@@ -122,14 +123,11 @@ export default function JobEntry() {
                         <option value="waiting">Waiting</option>
                         <option value="completed">Completed</option>
                     </NativeSelect>
-                    <FormHelperText>Some important helper text</FormHelperText>
+                    <FormHelperText>Current Order Status</FormHelperText>
                 </FormControl>
+                </Grid>
+
             </Grid>
-            <div>
-                <Link color="primary" href="javascript:;">
-                    View balance
-                </Link>
-            </div>
         </React.Fragment>
     );
 }

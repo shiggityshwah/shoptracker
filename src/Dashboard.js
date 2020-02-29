@@ -172,8 +172,14 @@ export default function Dashboard() {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
+            {/* Recent Orders */}
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <Orders />
+              </Paper>
+            </Grid>
             {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
+            <Grid item xs={12}>
               <Paper className={fixedHeightPaper}>
                 <Chart />
               </Paper>
@@ -184,12 +190,7 @@ export default function Dashboard() {
                 <JobEntry />
               </Paper>
             </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid>
+
           </Grid>
         </Container>
         <MadeWithLove />
