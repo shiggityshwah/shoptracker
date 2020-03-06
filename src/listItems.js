@@ -5,11 +5,15 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import PeopleIcon from '@material-ui/icons/People';
+import BuildIcon from '@material-ui/icons/Build';
 import BarChartIcon from '@material-ui/icons/BarChart';
-import LayersIcon from '@material-ui/icons/Layers';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+/* 
+* Build or Category for parts
+* DateRange for schedule
 
+*/
 export const mainListItems = (
   <div>
     <ListItem button>
@@ -26,9 +30,15 @@ export const mainListItems = (
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <PeopleIcon />
+        <DateRangeIcon />
       </ListItemIcon>
-      <ListItemText primary="Customers" />
+      <ListItemText primary="Schedule" />
+    </ListItem>
+    <ListItem button>
+      <ListItemIcon>
+        <BuildIcon />
+      </ListItemIcon>
+      <ListItemText primary="Parts" />
     </ListItem>
     <ListItem button>
       <ListItemIcon>
@@ -36,12 +46,7 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Reports" />
     </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Integrations" />
-    </ListItem>
+    
   </div>
 );
 

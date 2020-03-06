@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
-import Link from "@material-ui/core/Link";
-import Axios from "axios";
-import Moment from "moment";
 import { makeStyles } from "@material-ui/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Title from "./Title";
-import IconButton from "@material-ui/core/IconButton";
-import UpArrow from "@material-ui/icons/KeyboardArrowUp";
-import DownArrow from "@material-ui/icons/KeyboardArrowDown";
-import AddCircle from "@material-ui/icons/AddCircle";
+
+const useStyles = makeStyles(theme => ({
+  partHead: {
+    fontWeight: 600,
+  },
+}));
 
 export default function OrderTable(props) {
+  const classes = useStyles();
   const [parts, setParts] = useState([]);
 
   useEffect(() => {
@@ -27,19 +26,21 @@ export default function OrderTable(props) {
     <Table size="small">
       <TableHead>
         <TableRow>
-          <TableCell>Part Number</TableCell>
-          <TableCell>Description</TableCell>
-          <TableCell>Revision</TableCell>
-          <TableCell>Qty Needed</TableCell>
+          <TableCell className={classes.partHead}>Part - Description</TableCell>
+          <TableCell className={classes.partHead}>Revision</TableCell>
+          <TableCell className={classes.partHead}>Material</TableCell>
+          <TableCell className={classes.partHead}>Machine</TableCell>
+          <TableCell className={classes.partHead} align="center">Qty Needed</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {parts.map(part => (
           <TableRow key={part.id}>
-            <TableCell align="center">{part.partId}</TableCell>
-            <TableCell>{part.poId}</TableCell>
-            <TableCell align="right">{part.lastUpdate}</TableCell>
-            <TableCell align="right">{part.qty}</TableCell>
+            <TableCell align="left">{part.num} -  {part.desc}</TableCell>
+            <TableCell>{part.rev ? part.rev : "N/A"}</TableCell>
+            <TableCell>{part.material ? part.material : "N/A"}</TableCell>
+            <TableCell>{part.machine ? part.machine : "N/A"}</TableCell>
+            <TableCell align="center">{part.qty}</TableCell>
           </TableRow>
         ))}
       </TableBody>

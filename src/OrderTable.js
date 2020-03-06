@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Moment from "moment";
+import { makeStyles } from "@material-ui/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -10,12 +11,21 @@ import UpArrow from "@material-ui/icons/KeyboardArrowUp";
 import DownArrow from "@material-ui/icons/KeyboardArrowDown";
 import PartsTable from "./PartsTable";
 
-export default function OrderTable(props) {
+const useStyles = makeStyles(theme => ({
+  partHead: {
+    fontWeight: 600,
+  },
+}));
 
+/*   
+TODO: add collapse transition 
+*/
+export default function OrderTable(props) {
+  const classes = useStyles();
   const [orderIds, setOrderIds] = useState([]);
 
   function addOrRemovePoId(e) {
-    console.log("clicked " + e.target.id);
+    console.log("clicked " + e.target);
     const included = orderIds.includes(parseInt(e.target.id))
     console.log("included is " + included + ", array includes " + orderIds);
     if (included) {
@@ -31,10 +41,6 @@ export default function OrderTable(props) {
     }
   }
 
-  function partsWithPoId(poId) {
-    return this.props.orderItems.filter(orderItem => orderItem.poId === poId);
-  }
-
   return (
     <Table>
       <TableHead>
@@ -43,7 +49,7 @@ export default function OrderTable(props) {
           <TableCell>Description</TableCell>
           <TableCell>Part Qty</TableCell>
           <TableCell>Date Issued</TableCell>
-          <TableCell>Due Date</TableCell>
+          <TableCell colSpan={2}>Due Date</TableCell>
         </TableRow>
       </TableHead>
       {props.orders.map(order => (
@@ -57,11 +63,11 @@ export default function OrderTable(props) {
             <TableCell>
               {orderIds.includes(order.poId) ? (
                 <IconButton id={order.poId} onClick={addOrRemovePoId} >
-                  <UpArrow style={{pointerEvents:"none"}} />
+                  <UpArrow id={order.poId} onClick={addOrRemovePoId} />
                 </IconButton>
               ) : (
                 <IconButton id={order.poId} onClick={addOrRemovePoId} >
-                  <DownArrow style={{pointerEvents:"none"}} />
+                  <DownArrow id={order.poId} onClick={addOrRemovePoId} />
                 </IconButton>
               )}
             </TableCell>

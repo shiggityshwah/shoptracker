@@ -184,7 +184,7 @@ export default function Dashboard() {
                 <Chart />
               </Paper>
             </Grid>
-            {/* Recent Deposits */}
+            {/* Manual Job Entry */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
                 <JobEntry />

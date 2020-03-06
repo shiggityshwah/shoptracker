@@ -1,5 +1,3 @@
-/* eslint-disable no-script-url */
-
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import Title from "./Title";
