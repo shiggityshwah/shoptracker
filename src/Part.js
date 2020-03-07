@@ -1,51 +1,51 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import { Link } from "react-router-dom";
 import Title from "./Title";
 import OrderTable from "./OrderTable";
+import MaterialTable from "material-table";
 
 export default function Orders() {
-  const [openOrders, setOpenOrders] = useState([]);
-  const [openOrderParts, setOpenOrderParts] = useState([]);
-  const [partsFetched, setPartsFetched] = useState(false);
+  const [parts, setParts] = useState([]);
+  const [state, setState] = useState({
+    columns: [
+      { title: 'id', field: 'id'},
+      { title: 'Number', field: 'num'},
+      { title: 'Description', field: 'desc'}
+  ],
+    data: []
+  })
 
   useEffect(() => {
     /**
      ** Fetch new POs from Fishbowl that are not in our database.
      */
-    async function fetchNewOrders() {
-      setPartsFetched(false);
-      Axios.get("http://localhost:8000/api/v1/shoptracker/").then(res => {
-        const orders = res.data;
-        console.log(orders.data);
-        setOpenOrders(orders.data);
+    async function fetchParts() {
+      Axios.get("http://localhost:8000/api/v1/shoptracker/parts/all").then(res => {
+        const parts = res.data;
+        console.log(parts.data);
+        setParts(parts.data);
+        setState((prevState)=> {
+          const data = [...prevState.data];
+          data.push(parts);
+          return { ...prevState, data };
+        })
       });
     }
-    fetchNewOrders();
+    fetchParts();
   }, []);
-
-  useEffect(() => {
-    /**
-     ** Fetch parts from each new PO
-     */
-    async function getParts() {
-      console.log(partsFetched);
-      openOrders.map(order => {
-        const id = order.poId;
-        Axios.get("http://localhost:8000/api/v1/shoptracker/" + id).then(res => {
-          const partData = res.data;
-          console.log(partData.data);
-          setOpenOrderParts(prevParts => prevParts.concat(partData.data));
-          setPartsFetched(true);
-        });
-      });
-    }
-    getParts();
-  }, [openOrders]);
 
   return (
     <React.Fragment>
-      <Title>Recent Orders</Title>
-      <OrderTable orders={openOrders} orderItems={openOrderParts} />
+      <Title>Parts List</Title>{
+        parts.map( part => (
+          <Link to={`/parts/${part.num}`}>{part.num} - {part.desc}</Link>
+        ))
+      }
+      <MaterialTable
+        title="parts list"
+        columns={state.columns}
+        data={state.data} />
     </React.Fragment>
   );
 }
