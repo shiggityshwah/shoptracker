@@ -172,39 +172,20 @@ export default function Dashboard() {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
-            <Switch>
-              <Route
-                path="/orders"
-                render={() => (
-                  <Grid container spacing={3}>
-                    <Grid item xs={12}>
-                      <Paper className={classes.paper}>
-                        <Orders />
-                      </Paper>
-                    </Grid>
-                  </Grid>
-                )}
-              />
-
-              <Route
-                path="/parts"
-                render={() => (
-                  <Grid container spacing={3}>
-                    <Grid item xs={12}>
-                      <Paper className={fixedHeightPaper}>
-                        <Part />
-                      </Paper>
-                    </Grid>
-                  </Grid>
-                )}
-              />
-            </Switch>
             <Grid container spacing={3}>
-              {/* Manual Job Entry */}
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  <JobEntry />
+                  <Switch>
+                    <Route path="/orders" render={() => <Orders />} />
+                    <Route path="/parts" render={() => <Part />} />
+                    <Route path="/schedule" render={() => <JobEntry />} />
+                  </Switch>
                 </Paper>
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
               </Grid>
             </Grid>
           </Container>
