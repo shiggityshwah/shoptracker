@@ -179,6 +179,7 @@ export default function Dashboard() {
                     <Route path="/orders" render={() => <Orders />} />
                     <Route path="/parts" render={() => <Part />} />
                     <Route path="/schedule" render={() => <JobEntry />} />
+                    <Route path="/reports" render={() => <Chart />} />
                   </Switch>
                 </Paper>
               </Grid>

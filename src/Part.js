@@ -1,6 +1,5 @@
 import React, { useState, useEffect, forwardRef } from "react";
 import Axios from "axios";
-import { Link } from "react-router-dom";
 import Title from "./Title";
 import MaterialTable from "material-table";
 import {
@@ -58,9 +57,6 @@ export default function Orders() {
     );
   }
   useEffect(() => {
-    /**
-     ** Fetch new POs from Fishbowl that are not in our database.
-     */
     async function fetchParts() {
       Axios.get("http://localhost:8000/api/v1/shoptracker/part/all").then(
         res => {
@@ -90,7 +86,7 @@ export default function Orders() {
           { title: "Description", field: "desc" },
           { title: "Material", field: "material" },
           { title: "Material Size", field: "size" },
-          { title: "Time Estimate", field: "timeEstimate", type:"time"},
+          { title: "Time Estimate (in mins)", field: "timeEstimate", type:"numeric"},
           { title: "Last Made", field: "lastMade", type:"datetime", editable: "never"}
         ]}
         data={parts}
@@ -99,11 +95,9 @@ export default function Orders() {
             new Promise(resolve => {
               setTimeout(() => {
                 resolve();
-                setState(prevState => {
-                  const data = [...prevState.data];
-                  data.push(newData);
-                  return { ...prevState, data };
-                });
+                let data = [...parts];
+                data.push(newData);
+                setParts(data);
               }, 600);
             }),
           onRowUpdate: (newData, oldData) =>
@@ -111,11 +105,9 @@ export default function Orders() {
               setTimeout(() => {
                 resolve();
                 if (oldData) {
-                  setState(prevState => {
-                    const data = [...prevState.data];
-                    data[data.indexOf(oldData)] = newData;
-                    return { ...prevState, data };
-                  });
+                  let data = [...parts];
+                  data[data.indexOf(oldData)] = newData;
+                  setParts(data);
                 }
               }, 600);
             }),
@@ -123,21 +115,13 @@ export default function Orders() {
             new Promise(resolve => {
               setTimeout(() => {
                 resolve();
-                setState(prevState => {
-                  const data = [...prevState.data];
-                  data.splice(data.indexOf(oldData), 1);
-                  return { ...prevState, data };
-                });
+                let data = [...parts];
+                data.splice(data.indexOf(oldData), 1);
+                setParts(data);
               }, 600);
             }),
         }}
       />
-
-      {parts.map(part => (
-        <Link to={`/parts/${part.num}`}>
-          {part.num} - {part.desc}
-        </Link>
-      ))}
     </React.Fragment>
   );
 }

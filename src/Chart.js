@@ -22,7 +22,7 @@ const data = [
 export default function Chart() {
   return (
     <React.Fragment>
-      <Title>Today</Title>
+      <Title>Reports</Title>
       <ResponsiveContainer>
         <LineChart
           data={data}
@@ -32,6 +32,7 @@ export default function Chart() {
             bottom: 0,
             left: 24,
           }}
+          height={500}
         >
           <XAxis dataKey="time" />
           <YAxis>
