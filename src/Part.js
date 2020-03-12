@@ -44,18 +44,54 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-export default function Orders() {
+export default function Part() {
   const [parts, setParts] = useState([]);
 
-  async function updatePart(part) {
-    Axios.post("http://localhost:8000/api/v1/shoptracker/part/all", part).then(
-      res => {
-        const updatedPart = res.data;
-        console.log(updatedPart.data);
-        setParts(parts.data);
-      }
+  async function addPart(part, resolve) {
+    delete part["tableData"];
+
+    let res = await Axios.post(
+      "http://localhost:8000/api/v1/shoptracker/part/all",
+      part
     );
+
+    let data = [...parts];
+    data.push(part);
+    setParts(data);
+    resolve();
   }
+
+  async function updatePart(part, resolve) {
+    delete part["tableData"];
+
+    let res = await Axios.post(
+      "http://localhost:8000/api/v1/shoptracker/part/all",
+      part
+    );
+      
+    let data = [...parts];
+    data[data.indexOf(part)] = part;
+    setParts(data);
+    resolve();
+  }
+
+  async function removePart(part, resolve) {
+
+    let res = await Axios.post(
+      "http://localhost:8000/api/v1/shoptracker/part/all",
+      part
+    );
+
+    let data = [...parts];
+    data.splice(data.indexOf(part), 1);
+    setParts(data);
+    resolve();    
+  }
+
+  function prepNewData(newData) {
+    return {};
+  }
+
   useEffect(() => {
     async function fetchParts() {
       Axios.get("http://localhost:8000/api/v1/shoptracker/part/all").then(
@@ -81,19 +117,35 @@ export default function Orders() {
           pageSizeOptions: [10, 20, 50, 100]
         }}
         columns={[
-          { title: "Part #", field: "num", editable: "onAdd", defaultSort: "desc"},
+          {
+            title: "Part #",
+            field: "num",
+            editable: "onAdd",
+            defaultSort: "desc"
+          },
           { title: "Revision", field: "rev" },
           { title: "Description", field: "desc" },
           { title: "Material", field: "material" },
           { title: "Material Size", field: "size" },
-          { title: "Time Estimate (in mins)", field: "timeEstimate", type:"numeric"},
-          { title: "Last Made", field: "lastMade", type:"datetime", editable: "never"}
+          {
+            title: "Time Estimate (in mins)",
+            field: "timeEstimate",
+            type: "numeric"
+          },
+          {
+            title: "Last Made",
+            field: "lastMade",
+            type: "datetime",
+            editable: "never"
+          }
         ]}
         data={parts}
         editable={{
           onRowAdd: newData =>
             new Promise(resolve => {
+              addPart(newData, resolve);
               setTimeout(() => {
+                console.log(newData);
                 resolve();
                 let data = [...parts];
                 data.push(newData);
@@ -102,24 +154,20 @@ export default function Orders() {
             }),
           onRowUpdate: (newData, oldData) =>
             new Promise(resolve => {
-              setTimeout(() => {
-                resolve();
-                if (oldData) {
-                  let data = [...parts];
-                  data[data.indexOf(oldData)] = newData;
-                  setParts(data);
-                }
-              }, 600);
+              if (oldData) {
+                updatePart(newData, resolve);
+              }
             }),
           onRowDelete: oldData =>
             new Promise(resolve => {
               setTimeout(() => {
+                console.log(oldData);
                 resolve();
                 let data = [...parts];
                 data.splice(data.indexOf(oldData), 1);
                 setParts(data);
               }, 600);
-            }),
+            })
         }}
       />
     </React.Fragment>
