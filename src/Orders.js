@@ -16,7 +16,7 @@ export default function Orders() {
      */
     async function fetchNewOrders() {
       setPartsFetched(false);
-      Axios.get("http://localhost:8000/api/v1/shoptracker/").then(res => {
+      Axios.get("http://localhost:8000/api/v1/shoptracker/order/read/all").then(res => {
         const orders = res.data;
         console.log(orders.data);
         setOpenOrders(orders.data);
@@ -33,7 +33,7 @@ export default function Orders() {
       console.log(partsFetched);
       openOrders.map(order => {
         const id = order.poId;
-        Axios.get("http://localhost:8000/api/v1/shoptracker/" + id).then(res => {
+        Axios.get("http://localhost:8000/api/v1/shoptracker/order/parts/" + id).then(res => {
           const partData = res.data;
           console.log(partData.data);
           setOpenOrderParts(prevParts => prevParts.concat(partData.data));

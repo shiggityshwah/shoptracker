@@ -51,7 +51,7 @@ export default function Part() {
     delete part["tableData"];
 
     let res = await Axios.post(
-      "http://localhost:8000/api/v1/shoptracker/part/all",
+      "http://localhost:8000/api/v1/shoptracker/part/create/",
       part
     );
 
@@ -65,10 +65,10 @@ export default function Part() {
     delete part["tableData"];
 
     let res = await Axios.post(
-      "http://localhost:8000/api/v1/shoptracker/part/all",
+      "http://localhost:8000/api/v1/shoptracker/part/update/",
       part
     );
-      
+
     let data = [...parts];
     data[data.indexOf(part)] = part;
     setParts(data);
@@ -77,15 +77,15 @@ export default function Part() {
 
   async function removePart(part, resolve) {
 
-    let res = await Axios.post(
-      "http://localhost:8000/api/v1/shoptracker/part/all",
-      part
+    let res = await Axios.delete(
+      "http://localhost:8000/api/v1/shoptracker/part/delete/" + part.id
+
     );
 
     let data = [...parts];
     data.splice(data.indexOf(part), 1);
     setParts(data);
-    resolve();    
+    resolve();
   }
 
   function prepNewData(newData) {
@@ -94,7 +94,7 @@ export default function Part() {
 
   useEffect(() => {
     async function fetchParts() {
-      Axios.get("http://localhost:8000/api/v1/shoptracker/part/all").then(
+      Axios.get("http://localhost:8000/api/v1/shoptracker/part/read/all").then(
         res => {
           const parts = res.data;
           console.log(parts.data);
