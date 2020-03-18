@@ -16,7 +16,7 @@ export default function Orders() {
      */
     async function fetchNewOrders() {
       setPartsFetched(false);
-      Axios.get("http://localhost:8000/api/v1/shoptracker/order/read/all").then(res => {
+      Axios.get("http://localhost:8000/api/v1/shoptracker/order/read/allopen").then(res => {
         const orders = res.data;
         console.log(orders.data);
         setOpenOrders(orders.data);

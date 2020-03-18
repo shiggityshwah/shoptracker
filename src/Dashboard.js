@@ -22,6 +22,7 @@ import Chart from "./Chart";
 import Part from "./Part";
 import Orders from "./Orders";
 import JobEntry from "./JobEntry";
+import Queue from "./Queue";
 
 const drawerWidth = 240;
 
@@ -178,7 +179,7 @@ export default function Dashboard() {
                   <Switch>
                     <Route path="/orders" render={() => <Orders />} />
                     <Route path="/parts" render={() => <Part />} />
-                    <Route path="/schedule" render={() => <JobEntry />} />
+                    <Route path="/schedule" render={() => <Queue />} />
                     <Route path="/reports" render={() => <Chart />} />
                   </Switch>
                 </Paper>
