@@ -154,7 +154,7 @@ export default function Part() {
             }),
           onRowUpdate: (newData, oldData) =>
             new Promise(resolve => {
-              if (oldData) {
+              if (oldData && oldData !== newData) {
                 updatePart(newData, resolve);
               }
             }),
