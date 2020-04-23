@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Moment from "moment";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { makeStyles } from "@material-ui/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import Button from '@material-ui/core/Button';
 import Axios from "axios";
 import Title from "./Title";
 import Table from "@material-ui/core/Table";
@@ -12,8 +14,18 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import DragIndicator from "@material-ui/icons/DragIndicator";
+import SaveIcon from '@material-ui/icons/Save';
+import CircularProgress from '@material-ui/core/CircularProgress';
 // 1 2 3 4 5 6
 // 584  6 2 5 3 1 4
+const useStyles = makeStyles(theme => ({
+  button: {
+    margin: "15px",
+    float: "right"
+  },
+}));
+
+
 const grid = 8;
 
 const reorder = (list, startIndex, endIndex) => {
@@ -28,23 +40,21 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   userSelect: "none",
   padding: grid * 2,
   margin: `0 0 ${grid}px 0`,
-
-  background: isDragging ? "lightgreen" : "grey",
-
   ...draggableStyle
 });
 
 const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? "lightblue" : "lightgrey",
-    border: isDraggingOver ? "2px dashed red" : "",
+  background: isDraggingOver ? "#e1f5fe" : "",
 
   padding: grid,
   width: "100%"
 });
 
 export default function Queue() {
+  const classes = useStyles();
   const [queue, setQueue] = useState([]);
   const [changeList, setChangeList] = useState([]);
+  const [updating, setUpdating] = useState(false);
   //const [orders, setOrders] = useState([]);
   let initQueue = [];
 
@@ -55,40 +65,13 @@ export default function Queue() {
 
     const items = reorder(queue, result.source.index, result.destination.index);
 
-    let previousOrder = 0;
-    const movedOrder = items[result.destination.index].poId;
-    let nextOrder = 0;
-
-    //some confusing logic here due to database storing POs in reverse order.
-    if (result.destination.index === 0) {
-      //if moved to first, nextOrder's nextPO will be movedOrder and movedOrder's nextPO will be 0
-      nextOrder = items[result.destination.index + 1].poId;
-    } else if (result.destination.index === items.length - 1) {
-      //if moved to last, movedOrder will be set as lastPO, and it's nextPO will be set to previousOrder
-      previousOrder = items[result.destination.index - 1].poId;
-    } else {
-      previousOrder = items[result.destination.index - 1].poId; //if moved somewhere in between, nextOrder will set it's nextOrder to movedOrder, and movedOrder will set it's nextPO to previousOrder
-      nextOrder = items[result.destination.index + 1].poId;
-    }
-
-    const change = {
-      previousOrder: previousOrder,
-      movedOrder: movedOrder,
-      nextOrder: nextOrder
-    };
-    const newChangeList = [...changeList, change];
-
-    setChangeList(newChangeList);
     setQueue(items);
   };
 
-  function updateQueue(previousOrder, movedOrder, nextOrder) {
+  function updateQueue(changes) {
+    
     return new Promise(resolve => {
-      Axios.put("http://localhost:8000/api/v1/shoptracker/queue/update", {
-        previousOrder: previousOrder,
-        movedOrder: movedOrder,
-        nextOrder: nextOrder
-      }).then(res => {
+      Axios.put("http://localhost:8000/api/v1/shoptracker/queue/update", changes ).then(res => {
         resolve(res.data.data);
       });
     });
@@ -123,6 +106,19 @@ export default function Queue() {
     initQueue = [];
     sortOrders(openOrders, lastOrder);
     setQueue(initQueue);
+  }
+
+  async function confirmChanges() {
+    setUpdating(true);
+    let changes = [];
+    for (let i = queue.length-1; i > 0; i--) {
+      changes.push([queue[i].poId, queue[i-1].poId])
+    }
+    changes.push([queue[0].poId, 0])
+    console.log(changes)
+    await updateQueue(changes)
+    console.log("helloooo there")
+    setUpdating(false);
   }
 
   const sortOrders = (orderList, currentOrder) => {
@@ -183,7 +179,7 @@ export default function Queue() {
                           <DragIndicator />
                         </TableCell>
                         <TableCell>{order.num}</TableCell>
-                        <TableCell>{order.note}</TableCell>
+                        <TableCell>{order.poId}</TableCell>
                         <TableCell>{order.partQty}</TableCell>
                         <TableCell>
                           {Moment(order.dateIssued).fromNow()}
@@ -201,6 +197,19 @@ export default function Queue() {
           )}
         </Droppable>
       </DragDropContext>
+      <div>
+        <Button
+        variant="contained"
+        color="primary"
+        className={classes.button}
+        size="large"
+        startIcon={ <SaveIcon />}
+        onClick={confirmChanges}
+      >
+        Save Queue
+      </Button>
+      </div>
+      
     </React.Fragment>
   );
 }
